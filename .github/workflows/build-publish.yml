@@ -40,27 +40,27 @@ jobs:
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "Generated CalVer tag: ${TAG}"
 
-      - name: Check if tag exists
-        id: check-tag
+      - name: Generate final tag with patch version if needed
+        id: final-tag
         run: |
-          TAG=${{ steps.calver.outputs.tag }}
-          if docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${TAG} 2>/dev/null; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
+          BASE_TAG=${{ steps.calver.outputs.tag }}
+          FINAL_TAG="${BASE_TAG}"
+          PATCH=1
+
+          # Check if base tag exists, and if so, increment patch version
+          while docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${FINAL_TAG} 2>/dev/null; do
+            FINAL_TAG="${BASE_TAG}.${PATCH}"
+            PATCH=$((PATCH + 1))
+          done
+
+          echo "final_tag=${FINAL_TAG}" >> $GITHUB_OUTPUT
+          echo "Generated final tag: ${FINAL_TAG}"
 
       - name: Build and push Docker image
-        if: steps.check-tag.outputs.exists == 'false'
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.calver.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.final-tag.outputs.final_tag }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
-      - name: Image already exists
-        if: steps.check-tag.outputs.exists == 'true'
-        run: |
-          echo "Image with tag ${{ steps.calver.outputs.tag }} already exists. Skipping build."
