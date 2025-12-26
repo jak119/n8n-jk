@@ -5,6 +5,7 @@ on:
     paths:
       - "base_image_digest.txt"
   workflow_dispatch: # Allow manual trigger
+  workflow_call:
 
 env:
   REGISTRY: ghcr.io

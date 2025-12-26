@@ -55,3 +55,15 @@ jobs:
           git add base_image_digest.txt
           git commit -m "Update base image digest" || echo "No changes to commit"
           git push
+
+      - name: Trigger build workflow
+        if: steps.check-change.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-publish.yml',
+              ref: context.ref
+            })
