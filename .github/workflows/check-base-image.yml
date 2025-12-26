@@ -1,0 +1,57 @@
+name: Check Base Image
+
+on:
+  schedule:
+    # Run every Saturday at 00:00 UTC
+    - cron: "0 0 * * 6"
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-base-image:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get base image digest
+        id: base-image
+        run: |
+          docker pull docker.n8n.io/n8nio/n8n
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' docker.n8n.io/n8nio/n8n)
+          echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
+          echo "Base image digest: ${DIGEST}"
+
+      - name: Compare with last check
+        id: check-change
+        run: |
+          if [ -f "base_image_digest.txt" ]; then
+            LAST_DIGEST=$(cat base_image_digest.txt)
+            if [ "$LAST_DIGEST" = "${{ steps.base-image.outputs.digest }}" ]; then
+              echo "changed=false" >> $GITHUB_OUTPUT
+              echo "Base image unchanged"
+            else
+              echo "changed=true" >> $GITHUB_OUTPUT
+              echo "Base image changed"
+            fi
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "First check, digest file missing"
+          fi
+
+      - name: Update digest file
+        if: steps.check-change.outputs.changed == 'true'
+        run: |
+          echo "${{ steps.base-image.outputs.digest }}" > base_image_digest.txt
+
+      - name: Commit and push digest file
+        if: steps.check-change.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add base_image_digest.txt
+          git commit -m "Update base image digest" || echo "No changes to commit"
+          git push

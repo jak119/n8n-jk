@@ -1,9 +1,9 @@
 name: Build and Publish Docker Image
 
 on:
-  schedule:
-    # Run every Saturday at 00:00 UTC
-    - cron: "0 0 * * 6"
+  push:
+    paths:
+      - "base_image_digest.txt"
   workflow_dispatch: # Allow manual trigger
 
 env:
