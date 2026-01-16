@@ -3,7 +3,9 @@
   "extends": [
     "config:base"
   ],
-  "dockerfile": true,
+  "dockerfile": {
+    "enabled": true
+  },
   "docker": {
     "enabled": true
   },
