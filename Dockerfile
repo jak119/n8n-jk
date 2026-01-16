@@ -7,5 +7,8 @@ LABEL org.opencontainers.image.title="n8n" \
   org.opencontainers.image.documentation="https://github.com/jak119/n8n-jk" 
 
 USER root
-RUN npm install -g pdf-lib @visaright/pdf-lib && npm cache clean --force
+# Install in n8n's local node_modules, not globally
+RUN cd /usr/local/lib/node_modules/n8n && \
+    npm install pdf-lib @visaright/pdf-lib && \
+    npm cache clean --force
 USER node
