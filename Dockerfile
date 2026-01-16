@@ -8,14 +8,7 @@ LABEL org.opencontainers.image.title="n8n" \
 
 USER root
 
-# Create a custom modules directory
-RUN mkdir -p /usr/local/lib/n8n-custom-modules && \
-    cd /usr/local/lib/n8n-custom-modules && \
-    npm init -y && \
-    npm install pdf-lib @visaright/pdf-lib && \
+RUN npm install -g --legacy-peer-deps pdf-lib @visaright/pdf-lib && \
     npm cache clean --force
-
-# Update NODE_PATH to include the custom modules
-ENV NODE_PATH=/usr/local/lib/n8n-custom-modules/node_modules:$NODE_PATH
 
 USER node
