@@ -1,4 +1,5 @@
-FROM docker.n8n.io/n8nio/n8n
+# FROM docker.n8n.io/n8nio/n8n
+FROM ghcr.io/n8n-io/n8n:2.3.0
 
 LABEL org.opencontainers.image.title="n8n" \
   org.opencontainers.image.description="Custom N8N image with additional PDF packages" \
@@ -8,7 +9,7 @@ LABEL org.opencontainers.image.title="n8n" \
 
 USER root
 
-RUN npm install -g --legacy-peer-deps pdf-lib @visaright/pdf-lib && \
+RUN npm install -g pdf-lib @visaright/pdf-lib && \
     npm cache clean --force
 
 USER node
