@@ -3,10 +3,8 @@ name: Build and Publish Docker Image
 on:
   push:
     paths:
-      - "base_image_digest.txt"
       - "Dockerfile"
   workflow_dispatch: # Allow manual trigger
-  workflow_call:
 
 env:
   REGISTRY: ghcr.io

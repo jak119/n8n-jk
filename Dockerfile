@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.title="n8n" \
 
 USER root
 
-RUN npm install -g pdf-lib @visaright/pdf-lib && \
-    npm cache clean --force
+RUN npm install -g pdf-lib@1.17.1 @visaright/pdf-lib@1.17.2 && \
+  npm cache clean --force
 
 USER node
