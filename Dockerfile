@@ -7,8 +7,15 @@ LABEL org.opencontainers.image.title="n8n" \
   org.opencontainers.image.documentation="https://github.com/jak119/n8n-jk" 
 
 USER root
-# Install in n8n's local node_modules, not globally
-RUN cd /usr/local/lib/node_modules/n8n && \
+
+# Create a custom modules directory
+RUN mkdir -p /usr/local/lib/n8n-custom-modules && \
+    cd /usr/local/lib/n8n-custom-modules && \
+    npm init -y && \
     npm install pdf-lib @visaright/pdf-lib && \
     npm cache clean --force
+
+# Update NODE_PATH to include the custom modules
+ENV NODE_PATH=/usr/local/lib/n8n-custom-modules/node_modules:$NODE_PATH
+
 USER node
