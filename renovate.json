@@ -21,5 +21,17 @@
   },
   "patch": {
     "enabled": true
-  }
+  },
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "Dockerfile"
+      ],
+      "matchStrings": [
+        "npm install -g ([a-z-]+)@(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "npm",
+      "depNameTemplate": "{{{capture(1)}}}"
+    }
+  ]
 }
