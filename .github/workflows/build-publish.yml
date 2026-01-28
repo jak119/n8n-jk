@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - "Dockerfile"
+    branches:
+      - main
   workflow_dispatch: # Allow manual trigger
 
 env:
