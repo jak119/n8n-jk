@@ -1,12 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+"config:recommended"
   ],
   "dockerfile": {
-    "enabled": true
-  },
-  "docker": {
     "enabled": true
   },
   "postUpdateOptions": [
@@ -21,5 +18,11 @@
   },
   "patch": {
     "enabled": true
-  }
+  },
+  "packageRules": [
+    {
+      "matchCategories": ["docker"],
+      "enabled": true
+    }
+  ]
 }
