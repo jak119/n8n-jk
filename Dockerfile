@@ -1,5 +1,5 @@
 # FROM docker.n8n.io/n8nio/n8n
-FROM ghcr.io/n8n-io/n8n:2.14.2
+FROM ghcr.io/n8n-io/n8n:2.19.1
 
 LABEL org.opencontainers.image.title="n8n" \
   org.opencontainers.image.description="Custom N8N image with additional PDF packages" \
