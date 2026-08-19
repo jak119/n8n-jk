@@ -9,7 +9,7 @@
   "postUpdateOptions": [
     "gomodTidy"
   ],
-  "automerge": false,
+  "automerge": true,
   "major": {
     "enabled": true
   },
